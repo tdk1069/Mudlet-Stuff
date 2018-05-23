@@ -121,6 +121,7 @@ end
 
 function find_room()
 	eleMap.lastRoom = eleMap.currentRoom
+	eleMap.lastX,eleMap.lastY,eleMap.lastZ = getRoomCoordinates(eleMap.lastRoom)
 	eleMap.currentRoom = gmcp.Room.Id
 	if roomExists(eleMap.currentRoom) then
 		centerview(eleMap.currentRoom)
@@ -147,10 +148,14 @@ function find_link(exits)
 			break
 		end
 	end
+	if not roomExists(gmcp.Room.Id) then
+			local x,y,z = getRoomCoordinates(eleMap.lastRoom)
+			add_room(eleMap.currentRoom,x,y,z,getRoomArea(eleMap.lastRoom))
+			cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; I didn't know where to put this room! [&quot;..gmcp.Room.Id..&quot;] please move it manually (New Zone?)\n&quot;)
+	end
 end
 
 function add_room(id,x,y,z,area)
-print(&quot;....&quot;..x)
 	addRoom(id)
 	setRoomCoordinates(id,x,y,z)
 	setRoomArea(id,area)
