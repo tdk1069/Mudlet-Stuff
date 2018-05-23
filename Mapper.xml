@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+    <ScriptPackage>
+        <ScriptGroup isActive="yes" isFolder="yes">
+            <name>EleMapper</name>
+            <packageName></packageName>
+            <script>-------------------------------------------------
+--         Put your Lua functions here.        --
+--                                             --
+-- Note that you can also use external Scripts --
+-------------------------------------------------
+</script>
+            <eventHandlerList/>
+            <Script isActive="yes" isFolder="no">
+                <name>EleMapper</name>
+                <packageName></packageName>
+                <script>-------------------------------------------------
+--         Put your Lua functions here.        --
+--                                             --
+-- Note that you can also use external Scripts --
+-------------------------------------------------
+mudlet = mudlet or {}; mudlet.mapper_script = true
+
+EleMap = Geyser.Mapper:new({
+  name = &quot;EleMap&quot;,
+  x = &quot;70%&quot;, y = 0,
+  width = &quot;30%&quot;,
+  height = &quot;50%&quot;,
+})
+
+-- Start a new Map if nothing found/loaded
+
+if next(getRooms()) == nil then
+	print &quot;[  MAP  ] NEW MAP STARTED&quot;
+	print(&quot;[  MAP  ] Adding first room &quot;..gmcp.Room.Id)
+	setAreaName(1,&quot;Elephant&quot;)
+	addRoom(gmcp.Room.Id)
+	setRoomCoordinates(gmcp.Room.Id,0,0,0)
+	setRoomArea(gmcp.Room.Id,1)
+	centerview(gmcp.Room.Id)
+	add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
+	updateMap()
+end
+
+
+function add_room_neighbours(roomId,exits)
+	local x,y,z = getRoomCoordinates(gmcp.Room.Id)
+  for dir, id in pairs(exits) do
+		local newx,newy,newz = calculate_Coordinates(x,y,z,dir)
+    addRoom(id)
+		setRoomCoordinates(id,newx,newy,newz)
+		setRoomArea(id,getRoomArea(roomId))
+		if is_standard_exit(dir) then
+			setExit(roomId,id,dir)
+			setExit(id,roomId,reversemap[dir])
+		else
+			addSpecialExit(roomId,id,dir)
+		end
+		print(&quot;[  MAP  ] Adding [&quot;..dir..&quot;] =&gt; &quot;..id)
+  end
+	updateMap()
+end
+
+function is_standard_exit(dir)
+	if dir == &quot;north&quot; then
+		return true
+	elseif dir == &quot;northeast&quot; then
+		return true
+	elseif dir == &quot;east&quot; then
+		return true
+	elseif dir == &quot;southeast&quot; then
+		return true
+	elseif dir == &quot;south&quot; then
+		return true
+	elseif dir == &quot;southwest&quot; then
+		return true
+	elseif dir == &quot;west&quot; then
+		return true
+	elseif dir == &quot;northwest&quot; then
+		return true
+	elseif dir == &quot;up&quot; then
+		return true
+	elseif dir == &quot;down&quot; then
+		return true
+	elseif dir == &quot;in&quot; then
+		return true
+	elseif dir == &quot;out&quot; then
+		return true
+	else
+		return false
+	end
+end
+
+function calculate_Coordinates(x,y,z,dir)
+	if dir == &quot;north&quot; then
+		y = y + 2
+	elseif dir == &quot;northeast&quot; then
+		x = x + 2
+		y = y + 2
+	elseif dir == &quot;east&quot; then
+		x = x + 2
+	elseif dir == &quot;southeast&quot; then
+		x = x + 2
+		y = y - 2
+	elseif dir == &quot;south&quot; then
+		y = y - 2
+	elseif dir == &quot;southwest&quot; then
+		x = x - 2
+		y = y - 2
+	elseif dir == &quot;west&quot; then
+		x = x - 2
+	elseif dir == &quot;northwest&quot; then
+		x = x - 2
+		y = y + 2
+	elseif dir == &quot;up&quot; then
+		z = z + 2
+	elseif dir == &quot;down&quot; then
+		z = z - 2
+	end
+	return x,y,z
+end
+
+function find_room()
+	centerview(gmcp.Room.Id)
+end
+
+function add_exits()
+		add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
+end
+
+function purge_map()
+	for id, room in pairs(getRooms()) do
+		deleteRoom(id)
+		print(&quot;[  MAP  ] Deleting =&gt; &quot;..id)
+	end	
+end
+
+reversemap = {
+  n = 6,
+  north = 6,
+  ne = 8,
+  northeast = 8,
+  nw = 7,
+  northwest = 7,
+  e = 5,
+  east = 5,
+  w = 4,
+  west = 4,
+  s = 1,
+  south = 1,
+  se = 3,
+  southeast = 3,
+  sw = 2,
+  southwest = 2,
+  u = 10,
+  up = 10,
+  d = 9,
+  down = 9,
+  [&quot;in&quot;] = 12,
+  out = 11}
+	
+registerAnonymousEventHandler(&quot;gmcp.Room.Id&quot;, &quot;find_room&quot;)
+registerAnonymousEventHandler(&quot;gmcp.Room.Exits&quot;, &quot;add_exits&quot;)
+</script>
+                <eventHandlerList/>
+            </Script>
+        </ScriptGroup>
+    </ScriptPackage>
+</MudletPackage>
