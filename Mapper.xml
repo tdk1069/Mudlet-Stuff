@@ -2,20 +2,10 @@
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
     <ScriptPackage>
-        <ScriptGroup isActive="yes" isFolder="yes">
+        <Script isActive="yes" isFolder="no">
             <name>EleMapper</name>
             <packageName></packageName>
             <script>-------------------------------------------------
---         Put your Lua functions here.        --
---                                             --
--- Note that you can also use external Scripts --
--------------------------------------------------
-</script>
-            <eventHandlerList/>
-            <Script isActive="yes" isFolder="no">
-                <name>EleMapper</name>
-                <packageName></packageName>
-                <script>-------------------------------------------------
 --         Put your Lua functions here.        --
 --                                             --
 -- Note that you can also use external Scripts --
@@ -29,11 +19,13 @@ EleMap = Geyser.Mapper:new({
   height = &quot;50%&quot;,
 })
 
+eleMap = eleMap or {}
+
 -- Start a new Map if nothing found/loaded
 
 if next(getRooms()) == nil then
-	print &quot;[  MAP  ] NEW MAP STARTED&quot;
-	print(&quot;[  MAP  ] Adding first room &quot;..gmcp.Room.Id)
+	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED&quot;)
+	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id)
 	setAreaName(1,&quot;Elephant&quot;)
 	addRoom(gmcp.Room.Id)
 	setRoomCoordinates(gmcp.Room.Id,0,0,0)
@@ -43,23 +35,26 @@ if next(getRooms()) == nil then
 	updateMap()
 end
 
-
 function add_room_neighbours(roomId,exits)
 	local x,y,z = getRoomCoordinates(gmcp.Room.Id)
   for dir, id in pairs(exits) do
 		local newx,newy,newz = calculate_Coordinates(x,y,z,dir)
-    addRoom(id)
-		setRoomCoordinates(id,newx,newy,newz)
-		setRoomArea(id,getRoomArea(roomId))
-		if is_standard_exit(dir) then
-			setExit(roomId,id,dir)
-			setExit(id,roomId,reversemap[dir])
-		else
-			addSpecialExit(roomId,id,dir)
-		end
-		print(&quot;[  MAP  ] Adding [&quot;..dir..&quot;] =&gt; &quot;..id)
-  end
-	updateMap()
+		if not roomExists(id) then
+      addRoom(id)
+  		setRoomCoordinates(id,newx,newy,newz)
+  		setRoomArea(id,getRoomArea(roomId))
+	end
+	if not getRoomExits(roomId)[dir] then
+  		if is_standard_exit(dir) then
+  			setExit(roomId,id,dir)
+  			setExit(id,roomId,reversemap[dir])
+  		else
+  			addSpecialExit(roomId,id,dir)
+  		end
+  		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Adding [&quot;..dir..&quot;] =&gt; &quot;..id..&quot;\n&quot;)
+    end
+  	updateMap()
+	end
 end
 
 function is_standard_exit(dir)
@@ -117,22 +112,56 @@ function calculate_Coordinates(x,y,z,dir)
 		z = z + 2
 	elseif dir == &quot;down&quot; then
 		z = z - 2
+	else
+		x = x + 1
+		y = y + 1
 	end
 	return x,y,z
 end
 
 function find_room()
-	centerview(gmcp.Room.Id)
+	eleMap.lastRoom = eleMap.currentRoom
+	eleMap.currentRoom = gmcp.Room.Id
+	if roomExists(eleMap.currentRoom) then
+		centerview(eleMap.currentRoom)
+	else
+		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; No Room found for &lt;red&gt;&quot;..gmcp.Room.Id..&quot;&lt;reset&gt;\n&quot;)
+	end
 end
 
 function add_exits()
+	if roomExists(eleMap.currentRoom) then
 		add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
+	else
+		find_link(gmcp.Room.Exits)
+	end
+end
+
+function find_link(exits)
+  for dir, id in pairs(exits) do
+		if roomExists(id) then
+			cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Found adjoining room =&gt;&lt;red&gt;&quot;..id..&quot;&lt;reset&gt; &quot;..exitmap[reversemap[dir]]..&quot;\n&quot;)
+			local x,y,z = getRoomCoordinates(id)
+			local newx,newy,newz = calculate_Coordinates(x,y,z,exitmap[reversemap[dir]])
+			add_room(eleMap.currentRoom,newx,newy,newz,getRoomArea(eleMap.lastRoom))
+			break
+		end
+	end
+end
+
+function add_room(id,x,y,z,area)
+print(&quot;....&quot;..x)
+	addRoom(id)
+	setRoomCoordinates(id,x,y,z)
+	setRoomArea(id,area)
+	centerview(id)
+	add_room_neighbours(id,gmcp.Room.Exits)
 end
 
 function purge_map()
 	for id, room in pairs(getRooms()) do
 		deleteRoom(id)
-		print(&quot;[  MAP  ] Deleting =&gt; &quot;..id)
+		print(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Deleting =&gt; &quot;..id)
 	end	
 end
 
@@ -159,12 +188,46 @@ reversemap = {
   down = 9,
   [&quot;in&quot;] = 12,
   out = 11}
-	
+exitmap = {
+  n = 1,
+  north = 1,
+  ne = 2,
+  northeast = 2,
+  nw = 3,
+  northwest = 3,
+  e = 4,
+  east = 4,
+  w = 5,
+  west = 5,
+  s = 6,
+  south = 6,
+  se = 7,
+  southeast = 7,
+  sw = 8,
+  southwest = 8,
+  u = 9,
+  up = 9,
+  d = 10,
+  down = 10,
+  [&quot;in&quot;] = 11,
+  out = 12,
+  [1] = &quot;north&quot;,
+  [2] = &quot;northeast&quot;,
+  [3] = &quot;northwest&quot;,
+  [4] = &quot;east&quot;,
+  [5] = &quot;west&quot;,
+  [6] = &quot;south&quot;,
+  [7] = &quot;southeast&quot;,
+  [8] = &quot;southwest&quot;,
+  [9] = &quot;up&quot;,
+  [10] = &quot;down&quot;,
+  [11] = &quot;in&quot;,
+  [12] = &quot;out&quot;,
+}	
 registerAnonymousEventHandler(&quot;gmcp.Room.Id&quot;, &quot;find_room&quot;)
 registerAnonymousEventHandler(&quot;gmcp.Room.Exits&quot;, &quot;add_exits&quot;)
 </script>
-                <eventHandlerList/>
-            </Script>
-        </ScriptGroup>
+            <eventHandlerList/>
+        </Script>
     </ScriptPackage>
 </MudletPackage>
