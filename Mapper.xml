@@ -23,17 +23,7 @@ eleMap = eleMap or {}
 
 -- Start a new Map if nothing found/loaded
 
-if next(getRooms()) == nil then
-	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED&quot;)
-	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id)
-	setAreaName(1,&quot;Elephant&quot;)
-	addRoom(gmcp.Room.Id)
-	setRoomCoordinates(gmcp.Room.Id,0,0,0)
-	setRoomArea(gmcp.Room.Id,1)
-	centerview(gmcp.Room.Id)
-	add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
-	updateMap()
-end
+
 
 function add_room_neighbours(roomId,exits)
 	local x,y,z = getRoomCoordinates(gmcp.Room.Id)
@@ -166,7 +156,7 @@ end
 function purge_map()
 	for id, room in pairs(getRooms()) do
 		deleteRoom(id)
-		print(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Deleting =&gt; &quot;..id)
+		print(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Deleting =&gt; &quot;..id..&quot;\n&quot;)
 	end	
 end
 
@@ -229,8 +219,25 @@ exitmap = {
   [11] = &quot;in&quot;,
   [12] = &quot;out&quot;,
 }	
+
+function mapper_Installed()
+	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; EleMap Installed\n&quot;)
+if next(getRooms()) == nil then
+	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED\n&quot;)
+	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot;\n&quot;)
+	setAreaName(1,&quot;Elephant&quot;)
+	addRoom(gmcp.Room.Id)
+	setRoomCoordinates(gmcp.Room.Id,0,0,0)
+	setRoomArea(gmcp.Room.Id,1)
+	centerview(gmcp.Room.Id)
+	add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
+	updateMap()
+end
+end
+
 registerAnonymousEventHandler(&quot;gmcp.Room.Id&quot;, &quot;find_room&quot;)
 registerAnonymousEventHandler(&quot;gmcp.Room.Exits&quot;, &quot;add_exits&quot;)
+registerAnonymousEventHandler(&quot;sysInstall&quot;, &quot;mapper_Installed&quot;)
 </script>
             <eventHandlerList/>
         </Script>
