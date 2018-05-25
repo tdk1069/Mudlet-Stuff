@@ -12,18 +12,25 @@
 -------------------------------------------------
 mudlet = mudlet or {}; mudlet.mapper_script = true
 
-EleMap = Geyser.Mapper:new({
-  name = &quot;EleMap&quot;,
-  x = &quot;70%&quot;, y = 0,
-  width = &quot;30%&quot;,
-  height = &quot;50%&quot;,
-})
+--EleMap = Geyser.Mapper:new({
+--  name = &quot;EleMap&quot;,
+--  x = &quot;70%&quot;, y = 0,
+--  width = &quot;30%&quot;,
+--  height = &quot;50%&quot;,
+--})
 
 eleMap = eleMap or {}
 
 -- Start a new Map if nothing found/loaded
 
 
+function count_rooms()
+	local count = 0
+	for dir, id in pairs(getRooms()) do
+		count = count +1
+	end
+	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Total Rooms: &quot;..count..&quot;\n&quot;)
+end
 
 function add_room_neighbours(roomId,exits)
 	local x,y,z = getRoomCoordinates(gmcp.Room.Id)
@@ -110,12 +117,14 @@ function calculate_Coordinates(x,y,z,dir)
 end
 
 function find_room()
-print(string.sub(gmcp.Room.Id, 1, 3))	
+--print(string.sub(gmcp.Room.Id, 1, 3))	
 	eleMap.lastRoom = eleMap.currentRoom or gmcp.Room.Id
 	eleMap.lastX,eleMap.lastY,eleMap.lastZ = getRoomCoordinates(eleMap.lastRoom) or {}
 	eleMap.currentRoom = gmcp.Room.Id
 	if roomExists(eleMap.currentRoom) then
 		centerview(eleMap.currentRoom)
+--		getRoomName = tempRegexTrigger(&quot;(.+)&quot;, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
+--		getRoomName = tempColorTrigger(0,0, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
 	else
 		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; No Room found for &lt;red&gt;&quot;..gmcp.Room.Id..&quot;&lt;reset&gt;\n&quot;)
 	end
@@ -223,17 +232,23 @@ exitmap = {
 
 function mapper_Installed()
 	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; EleMap Installed\n&quot;)
-if next(getRooms()) == nil then
-	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED\n&quot;)
-	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot;\n&quot;)
-	setAreaName(1,&quot;Elephant&quot;)
-	addRoom(gmcp.Room.Id)
-	setRoomCoordinates(gmcp.Room.Id,0,0,0)
-	setRoomArea(gmcp.Room.Id,1)
-	centerview(gmcp.Room.Id)
-	add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
-	updateMap()
+  if next(getRooms()) == nil then
+  	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED\n&quot;)
+  	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot;\n&quot;)
+  	setAreaName(1,&quot;Elephant&quot;)
+  	addRoom(gmcp.Room.Id)
+  	setRoomCoordinates(gmcp.Room.Id,0,0,0)
+  	setRoomArea(gmcp.Room.Id,1)
+  	centerview(gmcp.Room.Id)
+  	add_room_neighbours(gmcp.Room.Id,gmcp.Room.Exits)
+  	updateMap()
+  end
 end
+
+
+function doSpeedWalk()
+    -- we can do a lot here, this fires when a room is double clicked on, and is intended to speedwalk to it
+    print(&quot;Path to &quot; .. getRoomName(speedWalkPath[#speedWalkPath]) .. &quot;: &quot; .. table.concat(speedWalkDir, &quot;, &quot;))
 end
 
 registerAnonymousEventHandler(&quot;gmcp.Room.Id&quot;, &quot;find_room&quot;)
