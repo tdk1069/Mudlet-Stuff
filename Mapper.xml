@@ -124,7 +124,11 @@ function find_room()
 	if roomExists(eleMap.currentRoom) then
 		centerview(eleMap.currentRoom)
 --		getRoomName = tempRegexTrigger(&quot;(.+)&quot;, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
+<<<<<<< HEAD
 --		getRoomName = tempColorTrigger(0,0, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
+=======
+		getRoomName = tempColorTrigger(0,0, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
+>>>>>>> 4910826effcda4202c12862ea2d6b64b7627274d
 	else
 		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; No Room found for &lt;red&gt;&quot;..gmcp.Room.Id..&quot;&lt;reset&gt;\n&quot;)
 	end
