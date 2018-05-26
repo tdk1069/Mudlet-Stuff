@@ -2,23 +2,18 @@
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
     <ScriptPackage>
-        <ScriptGroup isActive="yes" isFolder="yes">
-            <name>Vitals</name>
+        <Script isActive="yes" isFolder="no">
+            <name>Vital Guages</name>
             <packageName></packageName>
-            <script></script>
-            <eventHandlerList/>
-            <Script isActive="yes" isFolder="no">
-                <name>Vital Guages</name>
-                <packageName></packageName>
-                <script>function update_Vitals()
+            <script>function update_Vitals()
 	hive = hive or {}
 	hive.Char = hive.Char or {}
 	hive.Char.Vitals = hive.Char.Vitals or {}
 
 hpbar = Geyser.Gauge:new({
   name=&quot;hpbar&quot;,
-  x=&quot;50%&quot;, y=&quot;85%&quot;, -- CHANGE THIS TO MOVE
-  width=&quot;45%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
+  x=&quot;70%&quot;, y=&quot;85%&quot;, -- CHANGE THIS TO MOVE
+  width=&quot;25%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
 })
 hpbar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #98f041, stop: 0.1 #8cf029, stop: 0.49 #66cc00, stop: 0.5 #52a300, stop: 1 #66cc00);
     border-top: 1px black solid;
@@ -36,17 +31,17 @@ hpbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 
 ]])
 mpbar = Geyser.Gauge:new({
   name=&quot;mpbar&quot;,
-  x=&quot;50%&quot;, y=&quot;90%&quot;, -- CHANGE THIS TO MOVE
-  width=&quot;45%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
+  x=&quot;70%&quot;, y=&quot;90%&quot;, -- CHANGE THIS TO MOVE
+  width=&quot;25%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
 })
-mpbar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f04198, stop: 0.1 #f0298c, stop: 0.49 #cc0066, stop: 0.5 #a30052, stop: 1 #cc0066);
+mpbar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #4198f0, stop: 0.1 #298cf0, stop: 0.49 #0066cc, stop: 0.5 #0052a3, stop: 1 #0066cc);
     border-top: 1px black solid;
     border-left: 1px black solid;
     border-bottom: 1px black solid;
     border-radius: 7;
     padding: 3px;
 ]])
-mpbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #78bd33, stop: 0.1 #6ebd20, stop: 0.49 #4c9900, stop: 0.5 #387000, stop: 1 #4c9900);
+mpbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #3378bd, stop: 0.1 #206ebd, stop: 0.49 #004c99, stop: 0.5 #003870, stop: 1 #004c99);
     border-width: 1px;
     border-color: black;
     border-style: solid;
@@ -55,8 +50,8 @@ mpbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 
 ]])
 spbar = Geyser.Gauge:new({
   name=&quot;spbar&quot;,
-  x=&quot;50%&quot;, y=&quot;95%&quot;, -- CHANGE THIS TO MOVE
-  width=&quot;45%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
+  x=&quot;70%&quot;, y=&quot;95%&quot;, -- CHANGE THIS TO MOVE
+  width=&quot;25%&quot;, height=&quot;20px&quot;, -- CHANGE THIS RESIZE
 })
 spbar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #f09841, stop: 0.1 #f08c29, stop: 0.49 #cc6600, stop: 0.5 #a30052, stop: 1 #cc6600);
     border-top: 1px black solid;
@@ -65,7 +60,7 @@ spbar.front:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2:
     border-radius: 7;
     padding: 3px;
 ]])
-spbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #78bd33, stop: 0.1 #6ebd20, stop: 0.49 #4c9900, stop: 0.5 #387000, stop: 1 #4c9900);
+spbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #bd7833, stop: 0.1 #bd6e20, stop: 0.49 #994c00, stop: 0.5 #703800, stop: 1 #994c00);
     border-width: 1px;
     border-color: black;
     border-style: solid;
@@ -73,15 +68,14 @@ spbar.back:setStyleSheet([[background-color: QLinearGradient( x1: 0, y1: 0, x2: 
     padding: 3px;
 ]])
 
-hpbar:setValue((100/gmcp.Char.Vitals.maxhp)*gmcp.Char.Vitals.hp,100,&quot;HP&quot;..gmcp.Char.Vitals.maxhp..&quot;/&quot;..gmcp.Char.Vitals.hp)
-mpbar:setValue((100/gmcp.Char.Vitals.maxmp)*gmcp.Char.Vitals.mp,100,&quot;MP&quot;..gmcp.Char.Vitals.maxmp..&quot;/&quot;..gmcp.Char.Vitals.mp)
-spbar:setValue((100/gmcp.Char.Vitals.maxsp)*gmcp.Char.Vitals.sp,100,&quot;MP&quot;..gmcp.Char.Vitals.maxsp..&quot;/&quot;..gmcp.Char.Vitals.sp)
+  hpbar:setValue((100/gmcp.Char.Vitals.maxhp)*gmcp.Char.Vitals.hp,100,&quot;HP: &quot;..gmcp.Char.Vitals.hp..&quot;/&quot;..gmcp.Char.Vitals.maxhp)
+  mpbar:setValue((100/gmcp.Char.Vitals.maxmp)*gmcp.Char.Vitals.mp,100,&quot;MP: &quot;..gmcp.Char.Vitals.mp..&quot;/&quot;..gmcp.Char.Vitals.maxmp)
+  spbar:setValue((100/gmcp.Char.Vitals.maxsp)*gmcp.Char.Vitals.sp,100,&quot;SP: &quot;..gmcp.Char.Vitals.sp..&quot;/&quot;..gmcp.Char.Vitals.maxsp)
 end
 
 registerAnonymousEventHandler(&quot;gmcp.Char.Vitals&quot;, &quot;update_Vitals&quot;)
 </script>
-                <eventHandlerList/>
-            </Script>
-        </ScriptGroup>
+            <eventHandlerList/>
+        </Script>
     </ScriptPackage>
 </MudletPackage>
