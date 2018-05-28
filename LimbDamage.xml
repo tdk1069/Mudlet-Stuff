@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE MudletPackage>
+<MudletPackage version="1.001">
+    <ScriptPackage>
+        <Script isActive="yes" isFolder="no">
+            <name>LimbDamage</name>
+            <packageName></packageName>
+            <script>function limbDamage()
+	hive = hive or {}
+	hive.Char = hive.Char or {}
+	hive.Char.Limbs = hive.Char.Limbs or {}
+	table.merge(hive.Char.Limbs,gmcp.Char.Limbs)
+
+	limbWindow = Geyser.Label:new({
+    name = &quot;limbWindow&quot;,
+    x = &quot;50%&quot;, y = 0,											--	CHANGE THIS FOR POSITION
+    width = &quot;10%&quot;, height = &quot;25%&quot;,				--	CHANGE THIS FOR SIZE OF WINDOW
+	})
+	body = &quot;&lt;table width=\&quot;100%\&quot;&gt;&quot;
+  for k,v in pairs(hive.Char.Limbs) do
+		body = body .. &quot;&lt;tr&gt;&lt;td&gt;&quot; .. k .. &quot;&lt;/td&gt;&lt;td style=\&quot;color:rgb(255, &quot;..255-(math.floor(100-(v.hp/v.maxhp)*100)*2.5)..&quot;, &quot;..255-(math.floor(100-(v.hp/v.maxhp)*100)*2.5)..&quot;);\&quot;&gt;&quot;.. math.floor(100-(v.hp/v.maxhp)*100) ..&quot;%&lt;/td&gt;&lt;/tr&gt;&quot;
+	end
+	limbWindow:echo(body..&quot;&lt;/table&gt;&quot;)
+end
+
+function table.merge(t1, t2)
+    for k,v in pairs(t2) do
+        if type(v) == &quot;table&quot; then
+            if type(t1[k] or false) == &quot;table&quot; then
+                table.merge(t1[k] or {}, t2[k] or {})
+            else
+                t1[k] = v
+            end
+        else
+            t1[k] = v
+        end
+    end
+    return t1
+end
+registerAnonymousEventHandler(&quot;gmcp.Char.Limbs&quot;, &quot;limbDamage&quot;)
+</script>
+            <eventHandlerList/>
+        </Script>
+    </ScriptPackage>
+</MudletPackage>
