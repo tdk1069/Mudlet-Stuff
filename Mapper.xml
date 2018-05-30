@@ -131,6 +131,19 @@ function find_room()
 	if roomExists(eleMap.currentRoom) then
 		centerview(eleMap.currentRoom)
 	else
+		if eleMap.currentRoom == 78378792 then -- Valena Stagecoach Office
+			local newarea = getAreaTable()['Valena'] or addAreaName(&quot;Valena&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 116145107 then -- Rosfarren Stagecoach Office
+			local newarea = getAreaTable()['Rosfarren'] or addAreaName(&quot;Rosfarren&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 117145107 then -- Dun Glenderry Stagecoach Office
+			local newarea = getAreaTable()['Dun Glenderry'] or addAreaName(&quot;Dun Glenderry&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 18301318 then -- Drakenwood Stagecoach Office
+			local newarea = getAreaTable()['Drakenwood'] or addAreaName(&quot;Drakenwood&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		end 
 		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; No Room found for &lt;red&gt;&quot;..gmcp.Room.Id..&quot;&lt;reset&gt;\n&quot;)
 	end
 end
