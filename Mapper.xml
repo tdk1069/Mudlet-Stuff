@@ -235,11 +235,12 @@ exitmap = {
   [12] = &quot;out&quot;,
 }	
 
-function mapper_Installed()
+function mapper_Installed(_, name)
+	if name ~= &quot;Mapper&quot; then return end
 	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; EleMap Installed\n&quot;)
   if next(getRooms()) == nil then
   	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED\n&quot;)
-  	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot;\n&quot;)
+  	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot; Assuming your in Drakenwood, Manually move to new zone if not!\n&quot;)
   	setAreaName(1,&quot;Drakenwood&quot;)
   	setAreaName(2,&quot;Valena&quot;)
   	setAreaName(3,&quot;Rosfarren&quot;)
