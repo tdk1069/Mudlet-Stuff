@@ -279,6 +279,14 @@ function onSymbol(...)
 		for i = 3,arg['n'] do
 			setRoomChar(arg[i],&quot;🐴&quot;)
 	  end
+	elseif style == &quot;Book&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;📖&quot;)
+	  end
+	elseif style == &quot;Swords&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;⚔&quot;)
+	  end
 	elseif style == &quot;Clear&quot; then
 		for i = 3,arg['n'] do
 			setRoomChar(arg[i],&quot;&quot;)
@@ -291,6 +299,8 @@ addMapEvent(&quot;Post Office&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;
 addMapEvent(&quot;Store&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
 addMapEvent(&quot;Stable&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
 addMapEvent(&quot;Bank&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Book&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Swords&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
 addMapEvent(&quot;Clear&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
 
 registerAnonymousEventHandler(&quot;onSymbol&quot;, &quot;onSymbol&quot;)
