@@ -32,6 +32,14 @@ function count_rooms()
 	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Total Rooms: &quot;..count..&quot;\n&quot;)
 end
 
+function get_Colours()
+	for c, id in pairs(getCustomEnvColorTable()) do
+		setFgColor(id[1],id[2],id[3])
+		print(&quot;setRoomEnv(ID,&quot;..c..&quot;)&quot;)
+	end
+end
+
+
 function add_room_neighbours(roomId,exits)
 	local x,y,z = getRoomCoordinates(gmcp.Room.Id)
   for dir, id in pairs(exits) do
@@ -48,7 +56,7 @@ function add_room_neighbours(roomId,exits)
   		else
   			addSpecialExit(roomId,id,dir)
   		end
-  		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Adding [&quot;..dir..&quot;] =&gt; &quot;..id..&quot;\n&quot;)
+--  		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Adding [&quot;..dir..&quot;] =&gt; &quot;..id..&quot;\n&quot;)
     end
   	updateMap()
 	end
@@ -117,15 +125,25 @@ function calculate_Coordinates(x,y,z,dir)
 end
 
 function find_room()
---print(string.sub(gmcp.Room.Id, 1, 3))	
 	eleMap.lastRoom = eleMap.currentRoom or gmcp.Room.Id
 	eleMap.lastX,eleMap.lastY,eleMap.lastZ = getRoomCoordinates(eleMap.lastRoom) or {}
 	eleMap.currentRoom = gmcp.Room.Id
 	if roomExists(eleMap.currentRoom) then
 		centerview(eleMap.currentRoom)
---		getRoomName = tempRegexTrigger(&quot;(.+)&quot;, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
---		getRoomName = tempColorTrigger(0,0, [[setRoomName(eleMap.currentRoom,matches[1]);killTrigger(getRoomName)]])
 	else
+		if eleMap.currentRoom == 78378792 then -- Valena Stagecoach Office
+			local newarea = getAreaTable()['Valena'] or addAreaName(&quot;Valena&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 116145107 then -- Rosfarren Stagecoach Office
+			local newarea = getAreaTable()['Rosfarren'] or addAreaName(&quot;Rosfarren&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 117145107 then -- Dun Glenderry Stagecoach Office
+			local newarea = getAreaTable()['Dun Glenderry'] or addAreaName(&quot;Dun Glenderry&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		elseif eleMap.currentRoom == 18301318 then -- Drakenwood Stagecoach Office
+			local newarea = getAreaTable()['Drakenwood'] or addAreaName(&quot;Drakenwood&quot;)
+			add_room(eleMap.currentRoom,0,0,0,newarea)
+		end 
 		cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; No Room found for &lt;red&gt;&quot;..gmcp.Room.Id..&quot;&lt;reset&gt;\n&quot;)
 	end
 end
@@ -150,7 +168,7 @@ function find_link(exits)
 	end
 	if not roomExists(gmcp.Room.Id) then
 			local x,y,z = getRoomCoordinates(eleMap.lastRoom)
-			add_room(eleMap.currentRoom,x,y,z,getRoomArea(eleMap.lastRoom))
+			add_room(eleMap.currentRoom,x+1,y+1,z,getRoomArea(eleMap.lastRoom))
 			cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; I didn't know where to put this room! [&quot;..gmcp.Room.Id..&quot;] please move it manually (New Zone?)\n&quot;)
 	end
 end
@@ -230,12 +248,17 @@ exitmap = {
   [12] = &quot;out&quot;,
 }	
 
-function mapper_Installed()
+function mapper_Installed(_, name)
+	if name ~= &quot;Mapper&quot; then return end
 	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; EleMap Installed\n&quot;)
   if next(getRooms()) == nil then
   	cecho(&quot;&lt;cyan&gt;[  MAP  ]&lt;reset&gt; NEW MAP STARTED\n&quot;)
-  	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot;\n&quot;)
-  	setAreaName(1,&quot;Elephant&quot;)
+  	cecho(&quot;&lt;cyan&lt;[  MAP  ]&lt;reset&gt; Adding first room &quot;..gmcp.Room.Id..&quot; Assuming your in Drakenwood, Manually move to new zone if not!\n&quot;)
+  	setAreaName(1,&quot;Drakenwood&quot;)
+  	setAreaName(2,&quot;Valena&quot;)
+  	setAreaName(3,&quot;Rosfarren&quot;)
+  	setAreaName(4,&quot;Aerdy&quot;)
+		setAreaName(5,&quot;Dun Glenderry&quot;)
   	addRoom(gmcp.Room.Id)
   	setRoomCoordinates(gmcp.Room.Id,0,0,0)
   	setRoomArea(gmcp.Room.Id,1)
@@ -245,13 +268,56 @@ function mapper_Installed()
   end
 end
 
-
 function doSpeedWalk()
     -- we can do a lot here, this fires when a room is double clicked on, and is intended to speedwalk to it
     print(&quot;Path to &quot; .. getRoomName(speedWalkPath[#speedWalkPath]) .. &quot;: &quot; .. table.concat(speedWalkDir, &quot;, &quot;))
 		speedwalk(table.concat(speedWalkDir, &quot;, &quot;),false,0.36)
 end
 
+function onSymbol(...)
+	local style = arg[2]
+	local rooms = arg[3]
+	if style == &quot;Post Office&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;✉&quot;)
+	  end
+	elseif style == &quot;Store&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;🛒&quot;)
+	  end
+	elseif style == &quot;Bank&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;💰&quot;)
+	  end
+	elseif style == &quot;Stable&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;🐴&quot;)
+	  end
+	elseif style == &quot;Book&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;📖&quot;)
+	  end
+	elseif style == &quot;Swords&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;⚔&quot;)
+	  end
+	elseif style == &quot;Clear&quot; then
+		for i = 3,arg['n'] do
+			setRoomChar(arg[i],&quot;&quot;)
+	  end
+	end
+end
+
+addMapMenu(&quot;Add Symbol&quot;)
+addMapEvent(&quot;Post Office&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Store&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Stable&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Bank&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Book&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Swords&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+addMapEvent(&quot;Clear&quot;, &quot;onSymbol&quot;,&quot;Add Symbol&quot;)
+
+registerAnonymousEventHandler(&quot;onSymbol&quot;, &quot;onSymbol&quot;)
 registerAnonymousEventHandler(&quot;gmcp.Room.Id&quot;, &quot;find_room&quot;)
 registerAnonymousEventHandler(&quot;gmcp.Room.Exits&quot;, &quot;add_exits&quot;)
 registerAnonymousEventHandler(&quot;sysInstall&quot;, &quot;mapper_Installed&quot;)
