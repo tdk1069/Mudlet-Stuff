@@ -304,6 +304,7 @@ function onSymbol(...)
 end
 
 function convert_map_to_hash()
+	cecho("&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Checking if map needs converting to GUID\n")
 	for id, room in pairs(getRooms()) do
 		if getRoomIDbyHash(id) == -1 then
 			setRoomIDbyHash(id, id)		
@@ -322,6 +323,7 @@ function mapWindowOpen()
   addMapEvent("Bar", "onSymbol","Add Symbol")
   addMapEvent("Gem", "onSymbol","Add Symbol")
   addMapEvent("Clear", "onSymbol","Add Symbol")
+	convert_map_to_hash()
 	find_room()
 	if not mapAlias1 then tempAlias("^map count$",[[count_rooms()]]) end
 	if not mapAlias2 then tempAlias("^map colours$",[[get_Colours()]]) end
