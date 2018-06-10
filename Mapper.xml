@@ -11,7 +11,7 @@
 -- Note that you can also use external Scripts --
 -------------------------------------------------
 --
--- v0.13
+-- v0.14
 --
 -- eleMap.currentRoom = Mudlet room ID
 --
@@ -19,13 +19,6 @@
 mudlet = mudlet or {}; mudlet.mapper_script = true
 eleMap = eleMap or {}
 eleMap.mode = 0 				-- 1 = edit, 0=follow
-
-myMap = Geyser.Mapper:new({
-  name = "myMap",
-  x = 0, y = 0,
-  width = "100%",
-  height = "50%",
-},rightWindow)
 
 function count_rooms()
 	local count = 0
