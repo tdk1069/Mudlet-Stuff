@@ -305,10 +305,15 @@ end
 
 function convert_map_to_hash()
 	cecho("&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Checking if map needs converting to GUID\n")
+	local converted = 0
 	for id, room in pairs(getRooms()) do
 		if getRoomIDbyHash(id) == -1 then
 			setRoomIDbyHash(id, id)		
+			converted = converted + 1
 		end
+	end
+	if converted&gt;0 then
+	cecho("&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Converted "..converted.." rooms\n")
 	end
 end
 
