@@ -1,32 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE MudletPackage>
 <MudletPackage version="1.001">
-    <ScriptPackage>
-        <Script isActive="yes" isFolder="no">
-            <name>LimbDamage</name>
-            <packageName></packageName>
-            <script>function limbDamage()
+	<ScriptPackage>
+		<Script isActive="yes" isFolder="no">
+			<name>LimbDamage</name>
+			<packageName></packageName>
+			<script>function limbDamage()
 	hive = hive or {}
 	hive.Char = hive.Char or {}
 	hive.Char.Limbs = hive.Char.Limbs or {}
 	table.merge(hive.Char.Limbs,gmcp.Char.Limbs)
-
+--display(gmcp.Char.Limbs)
+	if not limbWindow then
 	limbWindow = Geyser.Label:new({
-    name = &quot;limbWindow&quot;,
-    x = &quot;50%&quot;, y = 0,											--	CHANGE THIS FOR POSITION
-    width = &quot;10%&quot;, height = &quot;25%&quot;,				--	CHANGE THIS FOR SIZE OF WINDOW
+    name = "limbWindow",
+    x = "61%", y = "50%",											--	CHANGE THIS FOR POSITION
+    width = "19%", height = "19%",				--	CHANGE THIS FOR SIZE OF WINDOW
 	})
-	body = &quot;&lt;table width=\&quot;100%\&quot;&gt;&quot;
-  for k,v in pairs(hive.Char.Limbs) do
-		body = body .. &quot;&lt;tr&gt;&lt;td&gt;&quot; .. k .. &quot;&lt;/td&gt;&lt;td style=\&quot;color:rgb(255, &quot;..255-(math.floor(100-(v.hp/v.maxhp)*100)*2.5)..&quot;, &quot;..255-(math.floor(100-(v.hp/v.maxhp)*100)*2.5)..&quot;);\&quot;&gt;&quot;.. math.floor(100-(v.hp/v.maxhp)*100) ..&quot;%&lt;/td&gt;&lt;/tr&gt;&quot;
+		limbWindow:setStyleSheet([[qproperty-alignment: 'AlignTop';
+      background-color: rgba(0,0,0,200);
+      border-style: solid;
+      border-width: 1px;
+      border-color: white;
+      border-radius: 5px;
+      margin: 5px;
+      qproperty-wordWrap: true;
+		]])
 	end
-	limbWindow:echo(body..&quot;&lt;/table&gt;&quot;)
+	local head = get_limb_colour(math.floor(100-(hive.Char.Limbs['head'].hp/hive.Char.Limbs['head'].maxhp)*100))
+	local la = get_limb_colour(math.floor(100-(hive.Char.Limbs['left arm'].hp/hive.Char.Limbs['left arm'].maxhp)*100))
+	local torso = get_limb_colour(math.floor(100-(hive.Char.Limbs['torso'].hp/hive.Char.Limbs['torso'].maxhp)*100))
+	local ra = get_limb_colour(math.floor(100-(hive.Char.Limbs['right arm'].hp/hive.Char.Limbs['right arm'].maxhp)*100))
+	local lh = get_limb_colour(math.floor(100-(hive.Char.Limbs['left hand'].hp/hive.Char.Limbs['left hand'].maxhp)*100))
+	local rh = get_limb_colour(math.floor(100-(hive.Char.Limbs['right hand'].hp/hive.Char.Limbs['right hand'].maxhp)*100))
+	local ll = get_limb_colour(math.floor(100-(hive.Char.Limbs['left leg'].hp/hive.Char.Limbs['left leg'].maxhp)*100))
+	local rl = get_limb_colour(math.floor(100-(hive.Char.Limbs['right leg'].hp/hive.Char.Limbs['right leg'].maxhp)*100))
+	local lf = get_limb_colour(math.floor(100-(hive.Char.Limbs['left foot'].hp/hive.Char.Limbs['left foot'].maxhp)*100))
+	local rf = get_limb_colour(math.floor(100-(hive.Char.Limbs['right foot'].hp/hive.Char.Limbs['right foot'].maxhp)*100))
+	body = "&lt;center&gt;Body Damage&lt;hr&gt;&lt;/center&gt;&lt;pre&gt;"
+body = body .. "                ("..head..")     - Head    \n"
+body = body .. "Left arm  -  /"..la.."|"..torso.."|"..ra.."\\  - Right arm \n"
+body = body .. "Left hand - ("..lh.."/ || \\"..rh..") - Right hand\n"
+body = body .. "Left leg  -   /"..ll.."/\\"..rl.."\\   - Right leg \n"
+body = body .. "Left foot -  ("..lf.."/  \\"..rf..")  - Right foot\n&lt;/pre&gt;"
+					 	limbWindow:echo(body)--.."&lt;/table&gt;")
+end
+
+function get_limb_colour(p)
+	local result = ""
+	if p &lt;33 then
+		result = result .. "&lt;span style=\"color:rgb(0,255,0);\"&gt;"
+	elseif p &lt;66 then
+		result = result .. "&lt;span style=\"color:rgb(255,255,0);\"&gt;"
+	else
+		result = result .. "&lt;span style=\"color:rgb(255,0,0);\"&gt;"
+	end
+	return result..string.format("%02d", p).."&lt;span style=\"color:rgb(255,255,255);\"&gt;"
+
 end
 
 function table.merge(t1, t2)
     for k,v in pairs(t2) do
-        if type(v) == &quot;table&quot; then
-            if type(t1[k] or false) == &quot;table&quot; then
+        if type(v) == "table" then
+            if type(t1[k] or false) == "table" then
                 table.merge(t1[k] or {}, t2[k] or {})
             else
                 t1[k] = v
@@ -37,9 +73,9 @@ function table.merge(t1, t2)
     end
     return t1
 end
-registerAnonymousEventHandler(&quot;gmcp.Char.Limbs&quot;, &quot;limbDamage&quot;)
+registerAnonymousEventHandler("gmcp.Char.Limbs", "limbDamage")
 </script>
-            <eventHandlerList/>
-        </Script>
-    </ScriptPackage>
+			<eventHandlerList />
+		</Script>
+	</ScriptPackage>
 </MudletPackage>
