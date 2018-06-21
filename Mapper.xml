@@ -11,7 +11,7 @@
 -- Note that you can also use external Scripts --
 -------------------------------------------------
 --
--- v0.14
+-- v0.2
 --
 -- eleMap.currentRoom = Mudlet room ID
 --
@@ -132,6 +132,8 @@ function find_room()
 end
 
 function add_exits()
+	local startMatrix = getStopWatchTime(mapMatrix)	
+	local newID = createRoomID()
 	if roomExists(eleMap.currentRoom) then
 		add_room_neighbours(eleMap.currentRoom,gmcp.Room.Exits)
 	else
@@ -146,7 +148,8 @@ function find_link(exits)
 			cecho("&lt;cyan&gt;[  MAP  ]&lt;reset&gt; Found adjoining room =&gt;&lt;red&gt;"..id.."&lt;reset&gt; "..exitmap[reversemap[dir]].."\n")
 			local x,y,z = getRoomCoordinates(roomID)
 			local newx,newy,newz = calculate_Coordinates(x,y,z,exitmap[reversemap[dir]])
-			add_room(eleMap.currentRoom,newx,newy,newz,getRoomArea(eleMap.lastRoom))
+--			add_room(eleMap.currentRoom,newx,newy,newz,getRoomArea(eleMap.lastRoom))
+			add_room(gmcp.Room.Id,newx,newy,newz,getRoomArea(eleMap.lastRoom))
 			break
 		end
 	end
@@ -159,12 +162,15 @@ end
 
 function add_room(hashID,x,y,z,area)
 	local newID = createRoomID()
-	addRoom(newID)
-	setRoomCoordinates(newID,x,y,z)
-	setRoomArea(newID,area)
-	setRoomIDbyHash(newID,hashID)
-	centerview(newID)
-	add_room_neighbours(newID,gmcp.Room.Exits)
+--print("Adding room id "..newID.." Hash:"..hashID)
+	if hashId ~= -1 then
+  	addRoom(newID)
+  	setRoomCoordinates(newID,x,y,z)
+  	setRoomArea(newID,area)
+  	setRoomIDbyHash(newID,hashID)
+  	centerview(newID)
+  	add_room_neighbours(newID,gmcp.Room.Exits)
+	end
 end
 
 function purge_map()
@@ -318,6 +324,7 @@ function convert_map_to_hash()
 end
 
 function mapWindowOpen()
+	mapMatrix = mapMatrix or createStopWatch()
   addMapMenu("Add Symbol")
   addMapEvent("Post Office", "onSymbol","Add Symbol")
   addMapEvent("Store", "onSymbol","Add Symbol")
